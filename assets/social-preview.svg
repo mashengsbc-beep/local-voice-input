@@ -1,0 +1,48 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="60" x2="1140" y2="592" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07131B"/>
+      <stop offset="0.55" stop-color="#0B1D29"/>
+      <stop offset="1" stop-color="#030B10"/>
+    </linearGradient>
+    <linearGradient id="a" x1="775" y1="183" x2="1097" y2="468" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#71FFF1"/>
+      <stop offset="1" stop-color="#1C7CFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" rx="32" fill="url(#bg)"/>
+  <circle cx="996" cy="480" r="184" fill="#092435" opacity="0.72"/>
+  <circle cx="1085" cy="118" r="168" fill="#0E2431" opacity="0.52"/>
+  <text x="92" y="114" fill="#97BBCB" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="18" letter-spacing="0.22em">LOCAL VOICE INPUT</text>
+  <text x="92" y="214" fill="white" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="72" font-weight="700">
+    <tspan x="92" dy="0">Talk once.</tspan>
+    <tspan x="92" dy="86">Type anywhere.</tspan>
+  </text>
+  <text x="94" y="370" fill="#B7D0DA" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="25">
+    <tspan x="94" dy="0">A local macOS voice input utility powered by Whisper.</tspan>
+    <tspan x="94" dy="40">Hotkey in. Text out. Quietly stays in the menu bar.</tspan>
+  </text>
+  <text x="94" y="472" fill="#D7FAFC" font-family="PingFang SC, SF Pro Text, sans-serif" font-size="28" font-weight="600">
+    本地语音输入，像输入法一样唤起，像工具一样安静常驻。
+  </text>
+  <g>
+    <rect x="740" y="120" width="432" height="390" rx="30" fill="#081721" fill-opacity="0.78" stroke="#1C556B"/>
+    <rect x="768" y="150" width="376" height="38" rx="19" fill="#102634"/>
+    <circle cx="795" cy="169" r="9" fill="#71FFF1"/>
+    <text x="818" y="176" fill="#E4FBFF" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="18" font-weight="600">本地语音输入</text>
+    <text x="1046" y="176" fill="#89AABA" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="14">Right Command</text>
+    <rect x="772" y="214" width="164" height="116" rx="21" fill="#0E2230"/>
+    <text x="792" y="247" fill="#8FB3C4" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="15">Input</text>
+    <text x="792" y="286" fill="white" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="29" font-weight="700">Chinese dictation</text>
+    <text x="792" y="316" fill="#8FB3C4" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="16">Mic / iPhone / BlackHole</text>
+    <rect x="954" y="214" width="188" height="116" rx="21" fill="#11283A"/>
+    <text x="974" y="247" fill="#8FB3C4" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="15">Output</text>
+    <text x="974" y="286" fill="white" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="29" font-weight="700">English</text>
+    <text x="974" y="316" fill="#8FB3C4" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="16">Translate / Natural polish</text>
+    <rect x="772" y="350" width="370" height="128" rx="25" fill="#071219" stroke="#14384A"/>
+    <path d="M807 420C826 402 845 388 864 388C883 388 902 420 921 420C940 420 959 370 978 370C997 370 1016 442 1035 442C1054 442 1073 394 1092 394" stroke="url(#a)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M792 446H1117" stroke="url(#a)" stroke-opacity="0.38" stroke-width="2"/>
+    <text x="792" y="387" fill="#DDFBFF" font-family="SF Pro Display, PingFang SC, sans-serif" font-size="18" font-weight="600">Hold to speak. Release to paste.</text>
+    <text x="792" y="468" fill="#8FB3C4" font-family="SF Pro Text, PingFang SC, sans-serif" font-size="15">Native Swift · Local Whisper · Custom dictionary</text>
+  </g>
+</svg>

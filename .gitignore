@@ -10,3 +10,6 @@ __pycache__/
 build/
 dist/
 release/
+assets/app-icon.png
+assets/AppIcon.icns
+assets/AppIcon.iconset/

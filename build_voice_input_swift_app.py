@@ -7,6 +7,7 @@ import plistlib
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -27,6 +28,7 @@ SWIFT_SOURCE = ROOT / "swift_voice_input_app.swift"
 TRANSCRIBE_HELPER = ROOT / "voice_input_transcribe_cli.py"
 AUDIO_HELPER = ROOT / "voice_input_audio_cli.py"
 CORE_HELPER = ROOT / "voice_input_core.py"
+APP_ICON_SVG = ROOT / "assets" / "app-icon.svg"
 
 SIGNING_IDENTITY_NAME = "Local Voice Input Signer"
 SIGNING_KEYCHAIN = Path.home() / "Library" / "Keychains" / "local-voice-input-signing.keychain-db"
@@ -69,6 +71,7 @@ def write_plist(backend_python: Path) -> None:
         "CFBundlePackageType": "APPL",
         "CFBundleShortVersionString": APP_VERSION,
         "CFBundleVersion": APP_BUILD,
+        "CFBundleIconFile": "AppIcon",
         "LSUIElement": True,
         "NSPrincipalClass": "NSApplication",
         "NSMicrophoneUsageDescription": "Local Voice Input needs access to your microphone so it can record speech.",
@@ -79,6 +82,52 @@ def write_plist(backend_python: Path) -> None:
     plist_path.parent.mkdir(parents=True, exist_ok=True)
     with plist_path.open("wb") as handle:
         plistlib.dump(info, handle)
+
+
+def build_app_icon(output_dir: Path) -> Path | None:
+    if not APP_ICON_SVG.exists():
+        return None
+
+    with tempfile.TemporaryDirectory(prefix="local-voice-input-icon-") as temp_dir_raw:
+        temp_dir = Path(temp_dir_raw)
+        png_path = temp_dir / "app-icon.png"
+        iconset_dir = temp_dir / "AppIcon.iconset"
+        iconset_dir.mkdir(parents=True, exist_ok=True)
+
+        subprocess.run(
+            ["qlmanage", "-t", "-s", "1024", "-o", str(temp_dir), str(APP_ICON_SVG)],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        ql_png = temp_dir / f"{APP_ICON_SVG.name}.png"
+        if ql_png.exists():
+            ql_png.rename(png_path)
+
+        if not png_path.exists():
+            raise SystemExit(f"Failed to render app icon PNG from {APP_ICON_SVG}")
+
+        sizes = [16, 32, 128, 256, 512]
+        for size in sizes:
+            base = iconset_dir / f"icon_{size}x{size}.png"
+            retina = iconset_dir / f"icon_{size}x{size}@2x.png"
+            subprocess.run(
+                ["sips", "-z", str(size), str(size), str(png_path), "--out", str(base)],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            subprocess.run(
+                ["sips", "-z", str(size * 2), str(size * 2), str(png_path), "--out", str(retina)],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+        icon_path = output_dir / "AppIcon.icns"
+        subprocess.run(["iconutil", "-c", "icns", str(iconset_dir), "-o", str(icon_path)], check=True)
+        return icon_path
 
 
 def resolve_signing_identity() -> str:
@@ -148,6 +197,7 @@ def build_dist(backend_python: Path) -> None:
 
     MACOS_DIR.mkdir(parents=True, exist_ok=True)
     RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+    built_icon = build_app_icon(RESOURCES_DIR)
     write_plist(backend_python)
 
     subprocess.run(
@@ -169,6 +219,8 @@ def build_dist(backend_python: Path) -> None:
 
     for helper in (TRANSCRIBE_HELPER, AUDIO_HELPER, CORE_HELPER):
         shutil.copy2(helper, RESOURCES_DIR / helper.name)
+    if built_icon is not None and not built_icon.exists():
+        raise SystemExit("App icon build finished without producing AppIcon.icns")
     subprocess.run(["chmod", "+x", str(MACOS_DIR / APP_NAME)], check=True)
 
 
