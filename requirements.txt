@@ -1,0 +1,5 @@
+imageio-ffmpeg>=0.6
+faster-whisper>=1.1,<2
+pyobjc-core>=11.1,<12
+pyobjc-framework-Cocoa>=11.1,<12
+opencc-python-reimplemented>=0.1.7,<1
