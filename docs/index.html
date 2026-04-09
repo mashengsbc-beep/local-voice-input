@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Local Voice Input</title>
+    <meta
+      name="description"
+      content="A lightweight macOS menu bar voice input tool powered by local Whisper."
+    />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./site.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="https://github.com/mashengsbc-beep/local-voice-input">
+          <span class="brand-mark">语</span>
+          <span class="brand-text">
+            <strong>Local Voice Input</strong>
+            <small>macOS menu bar dictation tool</small>
+          </span>
+        </a>
+        <nav class="site-nav">
+          <a href="https://github.com/mashengsbc-beep/local-voice-input/releases/tag/v2.6.0">Release</a>
+          <a href="https://github.com/mashengsbc-beep/local-voice-input">GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Local Whisper · Fast hotkey · Auto paste</p>
+            <h1>Talk once. Type anywhere.</h1>
+            <p class="lede">
+              A compact macOS voice input utility that feels closer to an input method than a note app.
+            </p>
+            <p class="lede zh">
+              像输入法一样唤起，像小工具一样安静常驻。说完就出字，尽量自动回填到当前输入框。
+            </p>
+            <div class="cta-row">
+              <a
+                class="button primary"
+                href="https://github.com/mashengsbc-beep/local-voice-input/releases/download/v2.6.0/local-voice-input-macos-v2.6.0.zip"
+              >
+                Download macOS
+              </a>
+              <a class="button secondary" href="https://github.com/mashengsbc-beep/local-voice-input">
+                View source
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <div class="orb orb-a"></div>
+            <div class="orb orb-b"></div>
+            <div class="hud">
+              <div class="hud-bar">
+                <span class="dot"></span>
+                <span>本地语音输入</span>
+                <span class="hotkey">Right Command</span>
+              </div>
+              <div class="hud-grid">
+                <div class="hud-block">
+                  <p>Input</p>
+                  <strong>Chinese dictation</strong>
+                  <span>Mic / iPhone / BlackHole</span>
+                </div>
+                <div class="hud-block">
+                  <p>Output</p>
+                  <strong>English</strong>
+                  <span>Translate / Natural polish</span>
+                </div>
+              </div>
+              <div class="wave-panel">
+                <div class="wave"></div>
+                <p>Hold to speak. Release to paste.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="strip">
+          <div>
+            <span>01</span>
+            <h2>Hold a hotkey</h2>
+            <p>Keep the interaction minimal: press, talk, release.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <h2>Transcribe locally</h2>
+            <p>Runs on local Whisper models with no cloud speech round-trip.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <h2>Paste back fast</h2>
+            <p>Copies to clipboard and tries to fill the active text field automatically.</p>
+          </div>
+        </section>
+
+        <section class="detail">
+          <div class="detail-copy">
+            <p class="eyebrow">Built for real dictation</p>
+            <h2>One menu bar tool, a few good choices, almost no clutter.</h2>
+            <ul class="feature-list">
+              <li>Original Chinese output in Simplified or Traditional Chinese</li>
+              <li>Translate spoken Chinese into English</li>
+              <li>Natural English polish for cleaner phrasing</li>
+              <li>Switch input sources: built-in mic, headset, USB mic, iPhone, virtual devices</li>
+              <li>Custom dictionary for names, brands, and common correction rules</li>
+            </ul>
+          </div>
+          <div class="detail-note">
+            <p>Best for:</p>
+            <strong>chat boxes, quick notes, bilingual drafting, and fast desktop dictation</strong>
+            <small>Designed for macOS. Source-first. Local-first.</small>
+          </div>
+        </section>
+
+        <section class="workflow">
+          <p class="eyebrow">Download or build</p>
+          <div class="workflow-grid">
+            <div>
+              <h3>Use the release build</h3>
+              <p>Download the zip, open the app, grant permissions, and start dictating.</p>
+            </div>
+            <div>
+              <h3>Build it yourself</h3>
+              <p>Clone the repo, install dependencies, then run the build script to generate the macOS app.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="final-cta">
+          <p class="eyebrow">Open source project</p>
+          <h2>Start with the release. Dive into the repo when you want the details.</h2>
+          <div class="cta-row">
+            <a
+              class="button primary"
+              href="https://github.com/mashengsbc-beep/local-voice-input/releases/tag/v2.6.0"
+            >
+              Open release
+            </a>
+            <a class="button secondary" href="https://github.com/mashengsbc-beep/local-voice-input#readme">
+              Read the README
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Local Voice Input</span>
+        <span>macOS · Whisper · MIT</span>
+      </footer>
+    </div>
+  </body>
+</html>
