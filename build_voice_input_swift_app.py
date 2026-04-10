@@ -46,14 +46,20 @@ def parse_args() -> argparse.Namespace:
 def resolve_backend_python() -> Path:
     env_path = os.environ.get("LOCAL_VOICE_INPUT_PYTHON")
     if env_path:
-        candidate = Path(env_path).expanduser().resolve()
+        candidate = Path(os.path.abspath(os.path.expanduser(env_path)))
         if candidate.is_file() and os.access(candidate, os.X_OK):
             return candidate
         raise SystemExit(f"LOCAL_VOICE_INPUT_PYTHON is set but not executable: {candidate}")
 
-    candidate = (ROOT / ".venv" / "bin" / "python").resolve()
-    if candidate.is_file() and os.access(candidate, os.X_OK):
-        return candidate
+    candidate_paths = [
+        ROOT / ".venv" / "bin" / "python",
+        ROOT.parent / ".venv" / "bin" / "python",
+        ROOT.parent.parent / ".venv" / "bin" / "python",
+    ]
+    for raw_candidate in candidate_paths:
+        candidate = Path(os.path.abspath(os.path.expanduser(str(raw_candidate))))
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return candidate
 
     raise SystemExit(
         "Could not find a backend Python interpreter.\n"

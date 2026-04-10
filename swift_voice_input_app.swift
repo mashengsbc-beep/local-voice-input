@@ -127,6 +127,48 @@ private func discoverHelperScript(named name: String) -> String? {
     return nil
 }
 
+private func userFacingErrorMessage(from rawMessage: String, fallback: String = "这次没完成，请再试一次。") -> String {
+    let trimmed = rawMessage.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else {
+        return fallback
+    }
+
+    if let data = trimmed.data(using: .utf8),
+       let payload = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+       let nestedError = payload["error"] as? String {
+        return userFacingErrorMessage(from: nestedError, fallback: fallback)
+    }
+
+    if trimmed.contains("ModuleNotFoundError") || trimmed.contains("ImportError") {
+        return "本地语音环境没有准备完整，请重新打开 app 再试。"
+    }
+
+    if trimmed.contains("Traceback") {
+        let lines = trimmed
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        if let summary = lines.reversed().first(where: { line in
+            !line.hasPrefix("Traceback")
+                && !line.hasPrefix("File ")
+                && !line.hasPrefix("^")
+        }) {
+            return userFacingErrorMessage(from: summary, fallback: fallback)
+        }
+        return fallback
+    }
+
+    if trimmed.hasPrefix("RuntimeError: ") {
+        return String(trimmed.dropFirst("RuntimeError: ".count))
+    }
+
+    if trimmed.hasPrefix("Error Domain=") {
+        return fallback
+    }
+
+    return trimmed
+}
+
 private struct HotkeyConfiguration {
     private static let keyCodeKey = "hotkey.keyCode"
     private static let modifiersKey = "hotkey.modifiers"
@@ -1351,7 +1393,7 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
                 } catch {
                     self.recordingSource = nil
                     self.statusItem.button?.title = "语"
-                    self.hud.show(.error(error.localizedDescription), autoHideAfter: 2.0)
+                    self.hud.show(.error(userFacingErrorMessage(from: error.localizedDescription, fallback: "录音没能开始，请再试一次。")), autoHideAfter: 2.0)
                     writeLog("Recording failed: \(error.localizedDescription)")
                 }
             }
@@ -1366,7 +1408,7 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
             isRecording = false
             recordingSource = nil
             statusItem.button?.title = "语"
-            hud.show(.error(error.localizedDescription), autoHideAfter: 2.0)
+            hud.show(.error(userFacingErrorMessage(from: error.localizedDescription, fallback: "录音结束失败，请再试一次。")), autoHideAfter: 2.0)
             writeLog("Recording stop failed: \(error.localizedDescription)")
             return
         }
@@ -1496,7 +1538,7 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
         isTranscribing = false
         recordingSource = nil
         statusItem.button?.title = "语"
-        hud.show(.error(message), autoHideAfter: 2.4)
+        hud.show(.error(userFacingErrorMessage(from: message)), autoHideAfter: 2.4)
         writeLog("Error: \(message)")
     }
 

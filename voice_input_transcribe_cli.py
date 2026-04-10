@@ -6,18 +6,6 @@ import json
 import sys
 from pathlib import Path
 
-from voice_input_core import (
-    CUSTOM_DICTIONARY_PATH,
-    LocalWhisperTranscriber,
-    MODELS_DIR,
-    apply_custom_replacements,
-    convert_chinese_script,
-    ensure_custom_dictionary_file,
-    polish_english_translation,
-    polish_transcript,
-)
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Transcribe a local audio file with faster-whisper.")
     parser.add_argument("--audio", required=True, help="Path to the audio file.")
@@ -45,6 +33,30 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def load_transcription_dependencies():
+    from voice_input_core import (
+        CUSTOM_DICTIONARY_PATH,
+        LocalWhisperTranscriber,
+        MODELS_DIR,
+        apply_custom_replacements,
+        convert_chinese_script,
+        ensure_custom_dictionary_file,
+        polish_english_translation,
+        polish_transcript,
+    )
+
+    return {
+        "CUSTOM_DICTIONARY_PATH": CUSTOM_DICTIONARY_PATH,
+        "LocalWhisperTranscriber": LocalWhisperTranscriber,
+        "MODELS_DIR": MODELS_DIR,
+        "apply_custom_replacements": apply_custom_replacements,
+        "convert_chinese_script": convert_chinese_script,
+        "ensure_custom_dictionary_file": ensure_custom_dictionary_file,
+        "polish_english_translation": polish_english_translation,
+        "polish_transcript": polish_transcript,
+    }
+
+
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
@@ -57,8 +69,9 @@ def main() -> int:
     language = None if args.language == "auto" else args.language
 
     try:
-        ensure_custom_dictionary_file()
-        transcriber = LocalWhisperTranscriber(MODELS_DIR)
+        deps = load_transcription_dependencies()
+        deps["ensure_custom_dictionary_file"]()
+        transcriber = deps["LocalWhisperTranscriber"](deps["MODELS_DIR"])
         text, detected_language, probability = transcriber.transcribe(
             audio_path=audio_path,
             model_name=args.model,
@@ -68,15 +81,15 @@ def main() -> int:
         raw_text = text.strip()
         if args.task == "translate":
             final_text = (
-                polish_english_translation(raw_text, natural=args.english_style == "natural")
+                deps["polish_english_translation"](raw_text, natural=args.english_style == "natural")
                 if args.polish
                 else raw_text
             )
         else:
-            final_text = polish_transcript(raw_text, language=detected_language) if args.polish else raw_text
+            final_text = deps["polish_transcript"](raw_text, language=detected_language) if args.polish else raw_text
             if args.script != "original":
-                final_text = convert_chinese_script(final_text, args.script)
-        final_text = apply_custom_replacements(final_text)
+                final_text = deps["convert_chinese_script"](final_text, args.script)
+        final_text = deps["apply_custom_replacements"](final_text)
         payload = {
             "text": final_text,
             "raw_text": raw_text,
@@ -84,7 +97,7 @@ def main() -> int:
             "probability": probability,
             "task": args.task,
             "english_style": args.english_style,
-            "custom_dictionary_path": str(CUSTOM_DICTIONARY_PATH),
+            "custom_dictionary_path": str(deps["CUSTOM_DICTIONARY_PATH"]),
         }
         print(json.dumps(payload, ensure_ascii=False))
         return 0

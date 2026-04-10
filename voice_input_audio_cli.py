@@ -6,9 +6,6 @@ import json
 import sys
 from pathlib import Path
 
-from voice_input_core import MicrophoneRecorder
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="List audio input devices or record from a specific macOS AVFoundation device.")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -21,8 +18,14 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def load_recorder_class():
+    from voice_input_core import MicrophoneRecorder
+
+    return MicrophoneRecorder
+
+
 def list_devices() -> int:
-    recorder = MicrophoneRecorder()
+    recorder = load_recorder_class()()
     devices = recorder.list_audio_devices()
     payload = {
         "devices": [
@@ -35,7 +38,7 @@ def list_devices() -> int:
 
 
 def record(device_index: int, output_path: str) -> int:
-    recorder = MicrophoneRecorder()
+    recorder = load_recorder_class()()
     output = Path(output_path).expanduser().resolve()
 
     try:
@@ -68,12 +71,16 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    if args.command == "list-devices":
-        return list_devices()
-    if args.command == "record":
-        return record(device_index=args.device_index, output_path=args.output)
-    parser.error("Unknown command")
-    return 2
+    try:
+        if args.command == "list-devices":
+            return list_devices()
+        if args.command == "record":
+            return record(device_index=args.device_index, output_path=args.output)
+        parser.error("Unknown command")
+        return 2
+    except Exception as exc:
+        print(json.dumps({"error": f"{exc.__class__.__name__}: {exc}"}, ensure_ascii=False), file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
