@@ -915,7 +915,7 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
         selectedAudioDeviceIndex = Self.loadSelectedAudioDeviceIndex()
         buildStatusItem()
         refreshHotkeyUI()
-        refreshHotkeyPermissionState(promptIfMissing: true)
+        refreshHotkeyPermissionState(promptIfMissing: false)
         refreshModelMenu()
         refreshOutputModeMenu()
         refreshOutputScriptMenu()
@@ -1148,7 +1148,6 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
         if promptIfMissing {
             _ = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary)
             _ = CGRequestListenEventAccess()
-            showPermissionAlertIfNeeded()
         }
     }
 
@@ -1550,17 +1549,6 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
         discoverHelperScript(named: "voice_input_audio_cli")
     }
 
-    private func showPermissionAlertIfNeeded() {
-        DispatchQueue.main.async {
-            let alert = NSAlert()
-            alert.messageText = "需要打开热键权限"
-            alert.informativeText = "热键可以使用“辅助功能”或“输入监控”其中任意一种权限。自动填入仍然建议打开“辅助功能”。我已经帮你打开系统设置。"
-            NSApp.activate(ignoringOtherApps: true)
-            alert.runModal()
-            self.hud.show(.error("先打开辅助功能或输入监控，再重新打开 app。"), autoHideAfter: 2.4)
-        }
-    }
-
     private func openPrivacyPane(anchor: String) {
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
@@ -1596,8 +1584,8 @@ final class VoiceInputAppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func recheckHotkeyPermission() {
         refreshHotkeyPermissionState(promptIfMissing: true)
-        if globalMonitor == nil {
-            hud.show(.error("热键还没启用，请先打开辅助功能。"), autoHideAfter: 2.0)
+        if hotkeyBackend == nil {
+            hud.show(.error("热键还没启用。开一次辅助功能或输入监控后，再重新打开 app 即可。"), autoHideAfter: 2.4)
         } else {
             hud.show(.success("热键已经可以用了"), autoHideAfter: 1.6)
         }
